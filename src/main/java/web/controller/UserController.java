@@ -69,8 +69,8 @@ public class UserController {
     }
 
     @PostMapping("/deleteUser")
-    public String delete(@ModelAttribute("user") User user) {
-        userDao.deleteUser(user);
+    public String delete(@ModelAttribute("id") int id) {
+        userDao.deleteUser(id);
         return "redirect:/";
     }
 }
