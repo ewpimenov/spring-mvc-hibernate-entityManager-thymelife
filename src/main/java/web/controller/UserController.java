@@ -2,34 +2,56 @@ package web.controller;
 
 import org.springframework.stereotype.Controller;
 
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import web.dao.UserDao;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.*;
+import web.model.Role;
 import web.model.User;
+import web.service.UserService;
+
 import javax.annotation.PostConstruct;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
-@Transactional
 public class UserController {
 
-    private final UserDao userDao;
+    private final UserService userService;
 
-    public UserController(UserDao userDao) {
-        this.userDao = userDao;
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
-   /* @PostConstruct
-    public void createUsersInTable(){
-        userDao.addUser(new User("Vasya", "1234"));
-    }*/
+    @PostConstruct
+    public void createUsersInTable() {
+
+
+        User user1 = new User("Vasya", "Sidorov", "DDDD", "1111");
+
+        User user2 = new User("Dima", "Ivanov", "SSSS", "2222");
+        Role role1 = new Role();
+        role1.setRole("ADMIN");
+
+        Role role2 = new Role();
+        role2.setRole("USER");
+
+        List<Role> list1 = new ArrayList<>();
+        list1.add(role1);
+
+        List<Role> list2 = new ArrayList<>();
+        list2.add(role2);
+
+        user1.setRoles(list1);
+        user2.setRoles(list2);
+
+        userService.addUser(user1);
+        userService.addUser(user2);
+
+    }
 
     @GetMapping("/")
     public String hello(Model model) {
-        model.addAttribute("users", userDao.getAllUsers());
+        model.addAttribute("users", userService.getAllUsers());
         return "listUsers";
     }
 
@@ -40,37 +62,53 @@ public class UserController {
 
     @PostMapping("/addUser")
     public String create(@ModelAttribute("user") User user) {
-        userDao.addUser(user);
+        userService.addUser(user);
         return "redirect:/";
     }
 
     @GetMapping("/listUsers")
     public String listAllUsers(Model model) {
-        model.addAttribute("users", userDao.getAllUsers());
+        model.addAttribute("users", userService.getAllUsers());
         return "listUsers";
     }
 
     @GetMapping("/updateUser")
     public String updateForm(@RequestParam int id, Model model) {
-        model.addAttribute("user", userDao.getUser(id));
+        model.addAttribute("user", userService.getUser(id));
         return "updateUser";
     }
 
     @PostMapping("/updateUser")
     public String update(@ModelAttribute("user") User user) {
-        userDao.updateUser(user);
+        userService.updateUser(user);
         return "redirect:/";
     }
 
     @GetMapping("/deleteUser")
     public String deleteUser(@RequestParam int id, Model model) {
-        model.addAttribute("user", userDao.getUser(id));
+        model.addAttribute("user", userService.getUser(id));
         return "deleteUser";
     }
 
     @PostMapping("/deleteUser")
     public String delete(@ModelAttribute("id") int id) {
-        userDao.deleteUser(id);
+        userService.deleteUser(id);
         return "redirect:/";
     }
+
+    @GetMapping("/hello")
+    public String printWelcome(ModelMap model) {
+        List<String> messages = new ArrayList<>();
+        messages.add("Hello!");
+        messages.add("I'm Spring MVC-SECURITY application");
+        messages.add("5.2.0 version by sep'19 ");
+        model.addAttribute("messages", messages);
+        return "hello";
+    }
+
+    @GetMapping("/login")
+    public String loginPage() {
+        return "login";
+    }
+
 }

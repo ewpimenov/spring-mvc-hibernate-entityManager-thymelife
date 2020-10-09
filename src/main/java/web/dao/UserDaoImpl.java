@@ -40,4 +40,12 @@ public class UserDaoImpl implements UserDao {
     public User getUser(int id) {
         return entityManager.find(User.class, id);
     }
+
+    @Override
+    public User getUserByName(String s) {
+
+        return entityManager.createQuery("select u from User u where u.name= :name", User.class)
+                .setParameter("name", s)
+                .getSingleResult();
+    }
 }
