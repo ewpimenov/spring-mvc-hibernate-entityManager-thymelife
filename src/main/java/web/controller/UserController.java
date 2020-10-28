@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
+
 import web.model.Role;
 import web.model.User;
 import web.service.UserService;
@@ -47,7 +48,9 @@ public class UserController {
         userService.addUser(user1);
         userService.addUser(user2);
 
+
     }
+
 
     @GetMapping("/")
     public String hello(Model model) {
@@ -84,13 +87,13 @@ public class UserController {
         return "redirect:/";
     }
 
-    @GetMapping("/deleteUser")
+    @PostMapping("/deleteUser")
     public String deleteUser(@RequestParam int id, Model model) {
         model.addAttribute("user", userService.getUser(id));
         return "deleteUser";
     }
 
-    @PostMapping("/deleteUser")
+    @GetMapping("/deleteUser")
     public String delete(@ModelAttribute("id") int id) {
         userService.deleteUser(id);
         return "redirect:/";
@@ -107,7 +110,8 @@ public class UserController {
     }
 
     @GetMapping("/login")
-    public String loginPage() {
+    public String loginPage(@ModelAttribute("name") String name) {
+       userService.getUserByName(name);
         return "login";
     }
 

@@ -3,21 +3,21 @@ package web.model;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @Table(name = "roles")
 public class Role implements GrantedAuthority {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column(name = "role")
     private String role;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    private Set<User> users;
+    @ManyToMany(mappedBy = "roles")
+    private List<User> users;
 
     public Role(){}
 
@@ -37,11 +37,11 @@ public class Role implements GrantedAuthority {
         this.role = role;
     }
 
-    public Set<User> getUsers() {
+    public List<User> getUsers() {
         return users;
     }
 
-    public void setUsers(Set<User> users) {
+    public void setUsers(List<User> users) {
         this.users = users;
     }
 
@@ -49,7 +49,7 @@ public class Role implements GrantedAuthority {
     public String toString() {
         return "Role{" +
                 "id=" + id +
-                ", name='" + role + '\'' +
+                ", role='" + role + '\'' +
                 ", users=" + users +
                 '}';
     }

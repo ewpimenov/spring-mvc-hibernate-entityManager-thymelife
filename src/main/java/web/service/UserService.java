@@ -4,6 +4,7 @@ import web.model.User;
 
 import java.util.List;
 
+
 public interface UserService {
 
     List<User> getAllUsers();
@@ -15,5 +16,7 @@ public interface UserService {
     void updateUser(User user);
 
     User getUser(int id);
+
+    User getUserByName(String name);
 
 }
