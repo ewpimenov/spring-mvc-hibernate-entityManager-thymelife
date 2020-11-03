@@ -1,8 +1,11 @@
 package web.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Controller;
 
 import org.springframework.ui.Model;
+
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,6 +16,7 @@ import web.service.UserService;
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
+
 
 @Controller
 public class UserController {
@@ -29,7 +33,7 @@ public class UserController {
 
         User user1 = new User("Vasya", "Sidorov", "DDDD", "1111");
 
-        User user2 = new User("Dima", "Ivanov", "SSSS", "2222");
+        User user2 = new User("Ivan", "Ivanov", "SSSS", "2222");
         Role role1 = new Role();
         role1.setRole("ADMIN");
 
@@ -47,7 +51,6 @@ public class UserController {
 
         userService.addUser(user1);
         userService.addUser(user2);
-
 
     }
 
@@ -110,9 +113,18 @@ public class UserController {
     }
 
     @GetMapping("/login")
-    public String loginPage(@ModelAttribute("name") String name) {
-       userService.getUserByName(name);
+    public String loginPage(@ModelAttribute("user") String username) {
+        userService.findByUsername(username);
         return "login";
     }
 
+    @GetMapping("/admin")
+    public String admin() {
+        return "admin";
+    }
+
+    @GetMapping("/user")
+    public String user() {
+        return "user";
+    }
 }

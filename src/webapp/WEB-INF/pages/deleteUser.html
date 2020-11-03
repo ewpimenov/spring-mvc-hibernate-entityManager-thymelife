@@ -7,13 +7,16 @@
 </head>
 <body>
 
-Вы хотите удалить пользователя?
-
+<h1>Вы хотите удалить пользователя?</h1>
+<br/>
 <form th:href="@{/deleteUser}" th:method="post" th:object="${user}">
 
     <input type="text" th:field="*{id}" id="id"/>
 
+    <br/>
+
     <input type="submit" value="Удалить">
+
 </form>
 
 </body>

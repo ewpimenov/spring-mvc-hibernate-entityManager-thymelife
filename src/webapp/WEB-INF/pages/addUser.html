@@ -8,7 +8,7 @@
 </head>
 <body>
 <h3>Добавить нового пользователя</h3>
-<form th:action="@{/addUser}" th:method="post" th:object="${user}">
+<form th:action="@{/addUser}" th:method="post">
     <div>
         <label for="name">Имя</label><br>
         <input type="text" th:field="*{name}" id="name"/>
