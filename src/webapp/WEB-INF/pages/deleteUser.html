@@ -11,12 +11,16 @@
 <br/>
 <form th:href="@{/deleteUser}" th:method="post" th:object="${user}">
 
+    <div>
     <input type="text" th:field="*{id}" id="id"/>
 
     <br/>
 
     <input type="submit" value="Удалить">
 
+    </div>
+    <br>
+    <a href="#" th:href="@{/logout}">Log Out</a>
 </form>
 
 </body>

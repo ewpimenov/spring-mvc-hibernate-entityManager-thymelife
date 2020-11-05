@@ -20,7 +20,7 @@ public class User implements UserDetails {
     private String name;
 
     @Column(name = "lastName")
-    private String lasName;
+    private String lastName;
 
     @Column(name = "username")
     private String username;
@@ -38,9 +38,9 @@ public class User implements UserDetails {
     public User() {
     }
 
-    public User(String name, String lasName, String username, String password) {
+    public User(String name, String lastName, String username, String password) {
         this.name = name;
-        this.lasName = lasName;
+        this.lastName = lastName;
         this.username = username;
         this.password = password;
     }
@@ -61,13 +61,21 @@ public class User implements UserDetails {
         this.name = name;
     }
 
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return getRoles();
     }
 
     public String getLasName() {
-        return lasName;
+        return lastName;
     }
 
     public void setUsername(String username) {

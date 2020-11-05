@@ -1,5 +1,6 @@
 package web.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -10,14 +11,21 @@ import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import web.config.handler.LoginSuccessHandler;
+import web.service.UserDetailServiceImpl;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    private final UserDetailServiceImpl userDetailServiceImpl;
+
+    public SecurityConfig(UserDetailServiceImpl userDetailServiceImpl) {
+        this.userDetailServiceImpl = userDetailServiceImpl;
+    }
+
     @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication().withUser("ADMIN").password("ADMIN").roles("ADMIN");
+        auth.userDetailsService(userDetailServiceImpl).passwordEncoder(passwordEncoder());
     }
 
     @Override
@@ -46,17 +54,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and().csrf().disable();
 
         http
+
                 // делаем страницу регистрации недоступной для авторизированных пользователей
                 .authorizeRequests()
                 //страницы аутентификаци доступна всем
                 .antMatchers("/login").anonymous()
                 // защищенные URL
-                .antMatchers("/admin/**").access("hasRole('ADMIN')")
-                .antMatchers("/addUser").hasRole("ADMIN")
-                .antMatchers("/listUsers").hasRole("ADMIN")
-                .antMatchers("/updateUser").hasRole("ADMIN")
-                .antMatchers("/deleteUser").hasRole("ADMIN")
-                .antMatchers("/user").hasAnyRole("USER","ADMIN")
+                .antMatchers("/admin/**").hasAnyAuthority("ADMIN")
+                .antMatchers("/addUser").hasAnyAuthority("ADMIN")
+                .antMatchers("/listUsers").hasAnyAuthority("ADMIN")
+                .antMatchers("/updateUser").hasAnyAuthority("ADMIN")
+                .antMatchers("/deleteUser").hasAnyAuthority("ADMIN")
+                .antMatchers("/user").access("hasAnyAuthority('USER','ADMIN')")
                 .anyRequest().authenticated();
     }
 

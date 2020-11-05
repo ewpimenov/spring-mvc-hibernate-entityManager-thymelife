@@ -1,7 +1,10 @@
 package web.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 
 import org.springframework.ui.Model;
@@ -14,6 +17,8 @@ import web.model.User;
 import web.service.UserService;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,9 +36,9 @@ public class UserController {
     public void createUsersInTable() {
 
 
-        User user1 = new User("Vasya", "Sidorov", "DDDD", "1111");
+        User user1 = new User("Vasya", "Sidorov", "ADMIN", "1111");
 
-        User user2 = new User("Ivan", "Ivanov", "SSSS", "2222");
+        User user2 = new User("Ivan", "Ivanov", "USER", "2222");
         Role role1 = new Role();
         role1.setRole("ADMIN");
 
@@ -54,52 +59,10 @@ public class UserController {
 
     }
 
-
     @GetMapping("/")
     public String hello(Model model) {
         model.addAttribute("users", userService.getAllUsers());
         return "listUsers";
-    }
-
-    @GetMapping("/addUser")
-    public String getUserAddForm(@ModelAttribute("user") User user) {
-        return "addUser";
-    }
-
-    @PostMapping("/addUser")
-    public String create(@ModelAttribute("user") User user) {
-        userService.addUser(user);
-        return "redirect:/";
-    }
-
-    @GetMapping("/listUsers")
-    public String listAllUsers(Model model) {
-        model.addAttribute("users", userService.getAllUsers());
-        return "listUsers";
-    }
-
-    @GetMapping("/updateUser")
-    public String updateForm(@RequestParam int id, Model model) {
-        model.addAttribute("user", userService.getUser(id));
-        return "updateUser";
-    }
-
-    @PostMapping("/updateUser")
-    public String update(@ModelAttribute("user") User user) {
-        userService.updateUser(user);
-        return "redirect:/";
-    }
-
-    @PostMapping("/deleteUser")
-    public String deleteUser(@RequestParam int id, Model model) {
-        model.addAttribute("user", userService.getUser(id));
-        return "deleteUser";
-    }
-
-    @GetMapping("/deleteUser")
-    public String delete(@ModelAttribute("id") int id) {
-        userService.deleteUser(id);
-        return "redirect:/";
     }
 
     @GetMapping("/hello")
@@ -113,18 +76,23 @@ public class UserController {
     }
 
     @GetMapping("/login")
-    public String loginPage(@ModelAttribute("user") String username) {
-        userService.findByUsername(username);
+    public String loginPage() {
         return "login";
     }
 
-    @GetMapping("/admin")
-    public String admin() {
-        return "admin";
+    @GetMapping("/logout")
+    public String logoutPage (HttpServletRequest request, HttpServletResponse response) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null){
+            new SecurityContextLogoutHandler().logout(request, response, auth);
+        }
+        return "redirect:/login?logout";
     }
 
     @GetMapping("/user")
-    public String user() {
+    public String userPage() {
         return "user";
     }
+
+
 }
