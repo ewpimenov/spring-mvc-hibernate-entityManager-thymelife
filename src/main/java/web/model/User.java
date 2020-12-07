@@ -1,10 +1,9 @@
 package web.model;
-
-
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -22,18 +21,19 @@ public class User implements UserDetails {
     @Column(name = "lastName")
     private String lastName;
 
-    @Column(name = "username")
+    @Column(name = "username", unique = true)
     private String username;
 
     @Column(name = "password")
     private String password;
-
+   
     transient private String confirmPassword;
 
-    @ManyToMany(cascade = {CascadeType.ALL})
-    @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private List<Role> roles;
+    @ManyToMany(cascade = {
+            CascadeType.PERSIST,CascadeType.MERGE})
+    @JoinTable(name = "user_roles", joinColumns = {@JoinColumn(name = "user_id")},
+            inverseJoinColumns = {@JoinColumn(name = "role_id")})
+    private List<Role> roles = new ArrayList<>();
 
     public User() {
     }
@@ -131,4 +131,5 @@ public class User implements UserDetails {
     public void setRoles(List<Role> roles) {
         this.roles = roles;
     }
+
 }

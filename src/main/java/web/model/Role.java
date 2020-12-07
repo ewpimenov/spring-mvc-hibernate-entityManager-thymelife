@@ -21,7 +21,7 @@ public class Role implements GrantedAuthority {
 
     public Role(){}
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 

@@ -2,9 +2,14 @@ package web.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
+import web.model.Role;
 import web.model.User;
 import web.service.UserService;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 @RequestMapping("/admin")
@@ -14,10 +19,20 @@ public class AdminController {
 
     public AdminController(UserService userService) {
         this.userService = userService;
+
     }
 
+    @GetMapping("/hello")
+    public String printWelcome(ModelMap model) {
+        List<String> messages = new ArrayList<>();
+        messages.add("Hello!");
+        messages.add("I'm Spring MVC-SECURITY application");
+        messages.add("5.2.0 version by sep'19 ");
+        model.addAttribute("messages", messages);
+        return "hello";
+    }
 
-    @GetMapping("")
+    @GetMapping
     public String adminPage() {
         return "admin";
     }
@@ -28,7 +43,8 @@ public class AdminController {
     }
 
     @PostMapping("/addUser")
-    public String create(@ModelAttribute("user") User user) {
+    public String create(@ModelAttribute("user") User user){
+
         userService.addUser(user);
         return "redirect:/";
     }
@@ -46,7 +62,7 @@ public class AdminController {
     }
 
     @PostMapping("/updateUser")
-    public String update(@ModelAttribute("user") User user) {
+    public String update(@ModelAttribute("user") User user, @ModelAttribute ("role") Role role) {
         userService.updateUser(user);
         return "redirect:/";
     }

@@ -1,42 +1,48 @@
 package web.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import web.config.handler.LoginSuccessHandler;
-import web.service.UserDetailServiceImpl;
+
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final UserDetailServiceImpl userDetailServiceImpl;
+    private final UserDetailsService userDetailsService;
 
-    public SecurityConfig(UserDetailServiceImpl userDetailServiceImpl) {
-        this.userDetailServiceImpl = userDetailServiceImpl;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    public SecurityConfig(@Qualifier("userServiceImpl")UserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
     }
 
     @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailServiceImpl).passwordEncoder(passwordEncoder());
+        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.formLogin()
+        http.formLogin()   
                 // указываем страницу с формой логина
                 .loginPage("/login")
                 //указываем логику обработки при логине
                 .successHandler(new LoginSuccessHandler())
                 // указываем action с формы логина
                 .loginProcessingUrl("/login")
+
                 // Указываем параметры логина и пароля с формы логина
                 .usernameParameter("username")
                 .passwordParameter("password")
@@ -60,17 +66,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 //страницы аутентификаци доступна всем
                 .antMatchers("/login").anonymous()
                 // защищенные URL
-                .antMatchers("/admin/**").hasAnyAuthority("ADMIN")
-                .antMatchers("/addUser").hasAnyAuthority("ADMIN")
-                .antMatchers("/listUsers").hasAnyAuthority("ADMIN")
-                .antMatchers("/updateUser").hasAnyAuthority("ADMIN")
-                .antMatchers("/deleteUser").hasAnyAuthority("ADMIN")
+                .antMatchers("/admin/**").hasAuthority("ADMIN")
                 .antMatchers("/user").access("hasAnyAuthority('USER','ADMIN')")
                 .anyRequest().authenticated();
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return NoOpPasswordEncoder.getInstance();
+    public BCryptPasswordEncoder getPasswordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }
