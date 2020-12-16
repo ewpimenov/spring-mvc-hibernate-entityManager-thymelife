@@ -15,6 +15,7 @@ import java.util.List;
 @RequestMapping("/admin")
 public class AdminController {
 
+
     private final UserService userService;
 
     public AdminController(UserService userService) {
@@ -63,7 +64,9 @@ public class AdminController {
 
     @PostMapping("/updateUser")
     public String update(@ModelAttribute("user") User user, @ModelAttribute ("role") Role role) {
+
         userService.updateUser(user);
+
         return "redirect:/";
     }
 

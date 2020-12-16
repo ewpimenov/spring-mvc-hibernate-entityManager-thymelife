@@ -40,7 +40,5 @@ public class UserAndRole {
 
         userService.addUser(user1);
         userService.addUser(user2);
-
     }
-
 }
