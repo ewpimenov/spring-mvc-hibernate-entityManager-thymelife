@@ -20,5 +20,7 @@ public interface UserService {
 
     User findByUsername(String username);
 
+    Role getRole(String roles);
+
 
 }

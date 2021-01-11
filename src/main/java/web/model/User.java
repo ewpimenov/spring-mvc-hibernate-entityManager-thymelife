@@ -21,7 +21,7 @@ public class User implements UserDetails {
     @Column(name = "lastName")
     private String lastName;
 
-    @Column(name = "username", unique = true)
+    @Column(name = "username")
     private String username;
 
     @Column(name = "password")
@@ -29,11 +29,10 @@ public class User implements UserDetails {
 
     transient private String confirmPassword;
 
-    @ManyToMany(cascade = {
-            CascadeType.PERSIST})
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles", joinColumns = {@JoinColumn(name = "user_id")},
             inverseJoinColumns = {@JoinColumn(name = "role_id")})
-    private List<Role> roles = new ArrayList<>();
+    private List<Role> roles;
 
     public User() {
     }
@@ -43,6 +42,12 @@ public class User implements UserDetails {
         this.lastName = lastName;
         this.username = username;
         this.password = password;
+    }
+
+    public User(int id, String confirmPassword, List<Role> roles) {
+        this.id = id;
+        this.confirmPassword = confirmPassword;
+        this.roles = roles;
     }
 
     public int getId() {
@@ -94,22 +99,22 @@ public class User implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return true;
     }
 
     public void setPassword(String password) {
@@ -132,4 +137,7 @@ public class User implements UserDetails {
         this.roles = roles;
     }
 
+
+    public void setRole(Role role) {
+    }
 }

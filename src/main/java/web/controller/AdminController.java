@@ -1,6 +1,7 @@
 package web.controller;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
@@ -9,18 +10,17 @@ import web.model.User;
 import web.service.UserService;
 
 import java.util.ArrayList;
+
 import java.util.List;
 
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
 
-
-    private final UserService userService;
+    private UserService userService;
 
     public AdminController(UserService userService) {
         this.userService = userService;
-
     }
 
     @GetMapping("/hello")
@@ -44,10 +44,15 @@ public class AdminController {
     }
 
     @PostMapping("/addUser")
-    public String create(@ModelAttribute("user") User user){
-
-        userService.addUser(user);
+    public String create(@ModelAttribute("user") User user, @ModelAttribute("role") String [] role) {
+      List<Role> roleList = new ArrayList<>();
+        for (String roles : role) {
+            roleList.add(userService.getRole(roles));
+            user.setRoles(roleList);
+            userService.addUser(user);
+        }
         return "redirect:/";
+
     }
 
     @GetMapping("/listUsers")
@@ -63,7 +68,7 @@ public class AdminController {
     }
 
     @PostMapping("/updateUser")
-    public String update(@ModelAttribute("user") User user, @ModelAttribute ("role") Role role) {
+    public String update(@ModelAttribute("user") User user) {
 
         userService.updateUser(user);
 
