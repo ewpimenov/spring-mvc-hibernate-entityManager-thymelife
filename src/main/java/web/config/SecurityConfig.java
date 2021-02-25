@@ -19,7 +19,8 @@ import web.config.handler.LoginSuccessHandler;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final UserDetailsService userDetailsService;
+
+    private UserDetailsService userDetailsService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -67,7 +68,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/login").anonymous()
                 // защищенные URL
                 .antMatchers("/admin/**").hasAuthority("ADMIN")
-                .antMatchers("/user").access("hasAnyAuthority('USER','ADMIN')")
+                .antMatchers("/user").access("hasAnyAuthority('ADMIN','USER')")
                 .anyRequest().authenticated();
     }
 

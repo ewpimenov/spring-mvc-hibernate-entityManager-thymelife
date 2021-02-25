@@ -7,6 +7,7 @@ import web.model.User;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.Arrays;
 import java.util.List;
 
 @Repository
@@ -48,10 +49,10 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public Role getRole(String roles){
-        return entityManager.find(Role.class, roles);
+    public List<Role> getRolesByName(String[] role) {
+        return entityManager.createQuery("select u from Role u where u.role IN :roleName",Role.class)
+                .setParameter("roleName",Arrays.asList(role))
+                .getResultList();
+
     }
-
-
-
 }

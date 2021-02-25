@@ -3,9 +3,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Table(name = "user_table")
@@ -32,9 +30,9 @@ public class User implements UserDetails {
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles", joinColumns = {@JoinColumn(name = "user_id")},
             inverseJoinColumns = {@JoinColumn(name = "role_id")})
-    private List<Role> roles;
+    private List<Role> roles = new ArrayList<>();
 
-    public User() {
+       public User() {
     }
 
     public User(String name, String lastName, String username, String password) {
@@ -137,7 +135,4 @@ public class User implements UserDetails {
         this.roles = roles;
     }
 
-
-    public void setRole(Role role) {
-    }
 }

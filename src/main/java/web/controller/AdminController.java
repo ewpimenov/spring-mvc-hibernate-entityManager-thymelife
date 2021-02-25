@@ -1,26 +1,35 @@
 package web.controller;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
+
 import web.model.Role;
 import web.model.User;
+import web.service.RoleService;
 import web.service.UserService;
 
-import java.util.ArrayList;
-
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/admin")
+@Transactional
 public class AdminController {
+
+    private RoleService roleService;
+
+    private final PasswordEncoder passwordEncoder;
 
     private UserService userService;
 
-    public AdminController(UserService userService) {
+    public AdminController(RoleService roleService, UserService userService, PasswordEncoder passwordEncoder) {
+        this.roleService = roleService;
         this.userService = userService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping("/hello")
@@ -44,15 +53,14 @@ public class AdminController {
     }
 
     @PostMapping("/addUser")
-    public String create(@ModelAttribute("user") User user, @ModelAttribute("role") String [] role) {
-      List<Role> roleList = new ArrayList<>();
-        for (String roles : role) {
-            roleList.add(userService.getRole(roles));
-            user.setRoles(roleList);
-            userService.addUser(user);
-        }
-        return "redirect:/";
+    public String create(@ModelAttribute("user") User user) {
 
+        user.setRoles(roleService.getAllRolesByName());
+        String encryptedPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(encryptedPassword);
+        userService.addUser(user);
+
+        return "redirect:/";
     }
 
     @GetMapping("/listUsers")
@@ -64,14 +72,17 @@ public class AdminController {
     @GetMapping("/updateUser")
     public String updateForm(@RequestParam int id, Model model) {
         model.addAttribute("user", userService.getUser(id));
+        model.addAttribute("roles", roleService.getAllRolesByName());
         return "updateUser";
     }
 
     @PostMapping("/updateUser")
-    public String update(@ModelAttribute("user") User user) {
+    public String update(@ModelAttribute("user") User user, @RequestParam("role") String[] role) {
 
+        user.setRoles(userService.getRolesByName(role));
+        String encryptedPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(encryptedPassword);
         userService.updateUser(user);
-
         return "redirect:/";
     }
 
@@ -86,5 +97,4 @@ public class AdminController {
         userService.deleteUser(id);
         return "redirect:/";
     }
-
 }

@@ -1,26 +1,38 @@
-package web.model;
+/*
+package web.InitPackage;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.transaction.Transactional;
+import javax.persistence.PersistenceContext;
+
+
+import org.springframework.transaction.annotation.Transactional;
+import web.model.Role;
+import web.model.User;
 import web.service.UserService;
 
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Component
 @Transactional
 public class UserAndRole {
 
-    private EntityManager entityManager;
-
+    @Autowired
     private UserService userService;
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     public UserAndRole(UserService userService, EntityManager entityManager) {
         this.userService = userService;
         this.entityManager = entityManager;
+    }
+
+    public UserAndRole() {
     }
 
     @PostConstruct
@@ -38,8 +50,8 @@ public class UserAndRole {
         Role role2 = new Role();
         role2.setRole("USER");
 
-        List<Role> list1 = new ArrayList<>();
-        List<Role> list2 = new ArrayList<>();
+        Set<Role> list1 = new HashSet<>();
+        Set<Role> list2 = new HashSet<>();
 
         user1.setRoles(list1);
         user2.setRoles(list2);
@@ -51,3 +63,4 @@ public class UserAndRole {
         userService.addUser(user2);
     }
 }
+*/

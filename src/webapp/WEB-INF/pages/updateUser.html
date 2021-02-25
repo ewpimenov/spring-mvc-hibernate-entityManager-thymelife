@@ -4,14 +4,12 @@
 <head>
     <meta charset="utf-8"/>
     <title>Обновление пользователя</title>
-    <!-- <title><link rel="stylesheet" type="text/css" media="all" th:href="@{/css/bootstrap.min.css}" />-->
-    </title>
 </head>
 <body>
 <div align="links">
     <h1>Обновить пользователя</h1>
     <br/>
-    <form th:action="@{/admin/updateUser}" th:method="post" th:object="${user}">
+    <form th:action="@{/admin/updateUser}" th:object="${user}" th:method="post">
 
         <div>
             <input type="hidden" th:field="*{id}" id="id"/>
@@ -21,7 +19,7 @@
 
             <br/>
 
-            <label for="lastName">Имя Пользователя</label><br>
+            <label for="lastName">Фамилия</label><br>
             <input type="text" th:field="*{lastName}" id="lastName"/>
 
             <br/>
@@ -31,17 +29,29 @@
 
             <br/>
 
-            <label for="username">Имя</label><br>
+            <label for="username">Имя Пользователя</label><br>
             <input type="text" th:field="*{username}" id="username"/>
+            <br/>
 
+            <label>Роли Пользователя</label><br>
+            <tr>
+                <td th:each="role : ${roles}">
+                    <input name="role" th:value="${role.role}"/>
+                </td>
+            </tr>
             <br/>
 
             <input type="submit" value="Обновить"/>
+            <br>
+
+            <br>
+            <a href="#" th:href="@{/logout}">Log Out</a>
 
         </div>
-        <br>
-        <a href="#" th:href="@{/logout}">Log Out</a>
+
+
     </form>
+
 </div>
 
 </body>

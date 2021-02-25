@@ -1,24 +1,23 @@
 package web.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import org.springframework.transaction.annotation.Transactional;
 import web.dao.UserDao;
 import web.model.Role;
 import web.model.User;
 
-import javax.transaction.Transactional;
+
 import java.util.*;
 
 @Service
+@Transactional
 public class UserServiceImpl implements UserService, UserDetailsService {
 
-    @Autowired
-    private final UserDao userDao;
+    private UserDao userDao;
 
     public UserServiceImpl(UserDao userDao) {
         this.userDao = userDao;
@@ -62,20 +61,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     @Transactional
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userDao.findByUsername(username);
-
-        return new org.springframework.security.core.userdetails.User(user.getName(),
-                user.getPassword(), user.getAuthorities());
+    public List<Role> getRolesByName(String[] role) { return userDao.getRolesByName(role);
     }
 
     @Override
     @Transactional
-    public Role getRole(String roles) {
-        return userDao.getRole(roles);
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userDao.findByUsername(username);
+        return new org.springframework.security.core.userdetails.User(user.getName(),
+                user.getPassword(), user.getAuthorities());
     }
-
-
 }
 
 
