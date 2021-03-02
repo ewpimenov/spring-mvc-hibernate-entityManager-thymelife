@@ -11,6 +11,9 @@ import web.model.Role;
 import web.model.User;
 
 
+import javax.annotation.PostConstruct;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.*;
 
 @Service
@@ -30,7 +33,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    @Transactional
     public void addUser(User user) {
         userDao.addUser(user);
     }
@@ -61,7 +63,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     @Transactional
-    public List<Role> getRolesByName(String[] role) { return userDao.getRolesByName(role);
+    public List<Role> getRolesByName(String[] role) {
+        return userDao.getRolesByName(role);
     }
 
     @Override

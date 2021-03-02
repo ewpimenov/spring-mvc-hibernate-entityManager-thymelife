@@ -34,18 +34,19 @@
             <br/>
 
             <label>Роли Пользователя</label><br>
-            <tr>
-                <td th:each="role : ${roles}">
-                    <input name="role" th:value="${role.role}"/>
-                </td>
-            </tr>
-            <br/>
+            <p><strong>Выбери role</strong></p>
+            <p><select name="role">
+                <option value="ADMIN">ADMIN</option>
+                <option value="USER" selected>USER</option>
+            </select>
 
-            <input type="submit" value="Обновить"/>
-            <br>
+                <br/>
 
-            <br>
-            <a href="#" th:href="@{/logout}">Log Out</a>
+                <input type="submit" value="Обновить"/>
+                <br>
+
+                <br>
+                <a href="#" th:href="@{/logout}">Log Out</a>
 
         </div>
 

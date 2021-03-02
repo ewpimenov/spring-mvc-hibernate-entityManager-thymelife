@@ -7,13 +7,12 @@ import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
-import web.model.Role;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import web.model.User;
 import web.service.RoleService;
 import web.service.UserService;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/admin")
@@ -59,7 +58,6 @@ public class AdminController {
         String encryptedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encryptedPassword);
         userService.addUser(user);
-
         return "redirect:/";
     }
 
