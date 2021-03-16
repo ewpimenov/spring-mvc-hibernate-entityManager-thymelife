@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 
 
 @Controller
+
 public class UserController {
 
     private UserService userService;
@@ -30,23 +31,8 @@ public class UserController {
         return "listUsers";
     }
 
-    @GetMapping("/login")
-    public String loginPage() {
-        return "login";
-    }
-
-    @GetMapping("/logout")
-    public String logoutPage (HttpServletRequest request, HttpServletResponse response) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth != null){
-            new SecurityContextLogoutHandler().logout(request, response, auth);
-        }
-        return "redirect:/login?logout";
-    }
-
     @GetMapping("/user")
     public String userPage() {
         return "user";
     }
-
 }

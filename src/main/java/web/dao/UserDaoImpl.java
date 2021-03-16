@@ -2,12 +2,11 @@ package web.dao;
 
 import org.springframework.stereotype.Repository;
 
-import web.model.Role;
 import web.model.User;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.Arrays;
+
 import java.util.List;
 
 @Repository
@@ -28,6 +27,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public void updateUser(User user) {
+
         entityManager.merge(user);
     }
 
@@ -46,13 +46,5 @@ public class UserDaoImpl implements UserDao {
     public User findByUsername(String username) {
         return entityManager.createQuery("select u from User u join fetch u.roles where u.username= :username", User.class)
                 .setParameter("username", username).getSingleResult();
-    }
-
-    @Override
-    public List<Role> getRolesByName(String[] role) {
-        return entityManager.createQuery("select u from Role u where u.role IN :roleName",Role.class)
-                .setParameter("roleName",Arrays.asList(role))
-                .getResultList();
-
     }
 }

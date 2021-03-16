@@ -40,7 +40,6 @@
                 <td th:text="${user.password}">
                 <td th:text="${user.username}">
                 <td>
-
                     <a th:href="@{/admin/updateUser(id=${user.id})}"> Обновить </a>
 
                     <br>
@@ -49,6 +48,8 @@
 
                 </td>
             </tr>
+
+
         </table>
 
         <a th:href="@{/admin/addUser}"> Добавить пользователя </a>

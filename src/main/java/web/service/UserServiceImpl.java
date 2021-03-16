@@ -63,12 +63,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     @Transactional
-    public List<Role> getRolesByName(String[] role) {
-        return userDao.getRolesByName(role);
-    }
-
-    @Override
-    @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userDao.findByUsername(username);
         return new org.springframework.security.core.userdetails.User(user.getName(),

@@ -46,6 +46,4 @@ public class Role implements GrantedAuthority {
         return getRole();
     }
 
-    public void setUser(User user) {
-    }
 }

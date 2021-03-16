@@ -5,6 +5,7 @@ import web.model.Role;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.Arrays;
 import java.util.List;
 
 @Repository
@@ -16,6 +17,13 @@ public class RoleDaoImpl implements RoleDao {
     @Override
     public List<Role> getAllRolesByName() {
         return entityManager.createQuery("select s from Role s", Role.class)
+                .getResultList();
+    }
+
+    @Override
+    public List<Role> getRolesByName(String[] role) {
+        return entityManager.createQuery("select u from Role u where u.role IN :roleName",Role.class)
+                .setParameter("roleName", Arrays.asList(role))
                 .getResultList();
 
     }

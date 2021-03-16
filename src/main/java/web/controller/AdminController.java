@@ -4,15 +4,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import web.model.User;
 import web.service.RoleService;
 import web.service.UserService;
 
-import java.util.*;
 
 @Controller
 @RequestMapping("/admin")
@@ -31,16 +28,6 @@ public class AdminController {
         this.passwordEncoder = passwordEncoder;
     }
 
-    @GetMapping("/hello")
-    public String printWelcome(ModelMap model) {
-        List<String> messages = new ArrayList<>();
-        messages.add("Hello!");
-        messages.add("I'm Spring MVC-SECURITY application");
-        messages.add("5.2.0 version by sep'19 ");
-        model.addAttribute("messages", messages);
-        return "hello";
-    }
-
     @GetMapping
     public String adminPage() {
         return "admin";
@@ -53,10 +40,8 @@ public class AdminController {
 
     @PostMapping("/addUser")
     public String create(@ModelAttribute("user") User user) {
-
         user.setRoles(roleService.getAllRolesByName());
-        String encryptedPassword = passwordEncoder.encode(user.getPassword());
-        user.setPassword(encryptedPassword);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userService.addUser(user);
         return "redirect:/";
     }
@@ -77,9 +62,14 @@ public class AdminController {
     @PostMapping("/updateUser")
     public String update(@ModelAttribute("user") User user, @RequestParam("role") String[] role) {
 
-        user.setRoles(userService.getRolesByName(role));
-        String encryptedPassword = passwordEncoder.encode(user.getPassword());
-        user.setPassword(encryptedPassword);
+        user.setRoles(roleService.getRolesByName(role));
+
+        User userFromDB = userService.getUser(user.getId());
+        String oldPassword = userFromDB.getPassword();
+        if (!user.getPassword().equals(oldPassword)) {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            userService.updateUser(user);
+        }
         userService.updateUser(user);
         return "redirect:/";
     }

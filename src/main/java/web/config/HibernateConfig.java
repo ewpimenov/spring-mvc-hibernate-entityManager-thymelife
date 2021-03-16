@@ -71,9 +71,9 @@ public class HibernateConfig implements WebMvcConfigurer {
 
     Properties additionalProperties() {
         Properties properties = new Properties();
-        properties.setProperty("hibernate.show_sql", env.getRequiredProperty("hibernate.show_sql"));
-        properties.setProperty("hibernate.hbm2ddl.auto", "update");
-        properties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect");
+        properties.getProperty("hibernate.show_sql");
+        properties.getProperty("hibernate.hbm2ddl.auto");
+        properties.getProperty("hibernate.dialect");
 
         return properties;
     }

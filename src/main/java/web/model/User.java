@@ -25,9 +25,7 @@ public class User implements UserDetails {
     @Column(name = "password")
     private String password;
 
-    transient private String confirmPassword;
-
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_roles", joinColumns = {@JoinColumn(name = "user_id")},
             inverseJoinColumns = {@JoinColumn(name = "role_id")})
     private List<Role> roles = new ArrayList<>();
@@ -42,11 +40,11 @@ public class User implements UserDetails {
         this.password = password;
     }
 
-    public User(int id, String confirmPassword, List<Role> roles) {
+    public User(int id, List<Role> roles) {
         this.id = id;
-        this.confirmPassword = confirmPassword;
         this.roles = roles;
     }
+
 
     public int getId() {
         return id;
@@ -119,14 +117,6 @@ public class User implements UserDetails {
         this.password = password;
     }
 
-    public String getConfirmPassword() {
-        return confirmPassword;
-    }
-
-    public void setConfirmPassword(String confirmPassword) {
-        this.confirmPassword = confirmPassword;
-    }
-
     public List<Role> getRoles() {
         return roles;
     }
@@ -134,5 +124,4 @@ public class User implements UserDetails {
     public void setRoles(List<Role> roles) {
         this.roles = roles;
     }
-
 }

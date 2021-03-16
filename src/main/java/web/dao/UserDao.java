@@ -19,6 +19,4 @@ public interface UserDao {
     User getUser(int id);
 
     User findByUsername(String username);
-
-    List<Role> getRolesByName(String[] role);
 }
